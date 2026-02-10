@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌 A Special Question for Aka</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: #1a0010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Floating background hearts */
+  .bg-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .bg-heart {
+    position: absolute;
+    opacity: 0.08;
+    animation: floatUp linear infinite;
+    color: #ff6b9d;
+    font-size: 1.5rem;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0.08; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* Main card */
+  .card {
+    background: linear-gradient(145deg, #2d0020, #1a0010);
+    border: 1px solid rgba(255, 107, 157, 0.3);
+    border-radius: 28px;
+    padding: 50px 45px;
+    text-align: center;
+    max-width: 480px;
+    width: 90%;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 0 60px rgba(255, 107, 157, 0.2), 0 0 120px rgba(255, 107, 157, 0.05);
+    transition: all 0.5s ease;
+  }
+
+  .envelope-icon {
+    font-size: 3rem;
+    animation: pulse 2s ease-in-out infinite;
+    display: block;
+    margin-bottom: 18px;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .greeting {
+    font-family: 'Dancing Script', cursive;
+    color: #ffb3cf;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .name {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3.5rem;
+    background: linear-gradient(135deg, #ff6b9d, #ff9a9e, #fecfef);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 22px;
+    filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.4));
+  }
+
+  .question {
+    font-size: 1.5rem;
+    color: #ffe0ee;
+    font-weight: 800;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .subtext {
+    font-size: 0.95rem;
+    color: rgba(255, 200, 225, 0.55);
+    margin-bottom: 38px;
+    font-style: italic;
+  }
+
+  .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  .btn {
+    padding: 15px 45px;
+    border-radius: 50px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-yes {
+    background: linear-gradient(135deg, #ff6b9d, #e91e8c);
+    color: white;
+    box-shadow: 0 6px 25px rgba(233, 30, 140, 0.45);
+  }
+  .btn-yes:hover {
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 10px 35px rgba(233, 30, 140, 0.6);
+  }
+  .btn-no {
+    background: transparent;
+    color: rgba(255, 180, 210, 0.5);
+    border: 1.5px solid rgba(255, 107, 157, 0.2);
+    font-size: 0.75rem;
+    padding: 10px 22px;
+    align-self: center;
+    transition: all 0.3s ease;
+  }
+  .btn-no:hover { color: rgba(255,180,210,0.7); border-color: rgba(255,107,157,0.4); transform: scale(0.95); }
+
+  /* YES screen */
+  #yes-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #1a0010;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 30px;
+  }
+
+  #yes-screen.show { display: flex; }
+
+  .canvas-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 101;
+    pointer-events: none;
+  }
+
+  #heartCanvas { width: 100%; height: 100%; }
+
+  .yes-content {
+    position: relative;
+    z-index: 102;
+    animation: fadeInUp 1s ease 0.5s both;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .yes-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 4rem;
+    background: linear-gradient(135deg, #ff6b9d, #ffb3cf, #fecfef);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 30px rgba(255, 107, 157, 0.6));
+  }
+
+  .yes-msg {
+    color: #ffe0ee;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.7;
+    max-width: 380px;
+    margin: 0 auto 30px;
+  }
+
+  .screenshot-box {
+    background: rgba(255, 107, 157, 0.12);
+    border: 1.5px dashed rgba(255, 107, 157, 0.4);
+    border-radius: 18px;
+    padding: 22px 28px;
+    max-width: 360px;
+    margin: 0 auto;
+    animation: glowPulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(255,107,157,0.15); }
+    50% { box-shadow: 0 0 35px rgba(255,107,157,0.35); }
+  }
+
+  .screenshot-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+
+  .screenshot-box p {
+    color: #ffb3cf;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  .screenshot-box .highlight {
+    color: #ff6b9d;
+    font-weight: 800;
+  }
+
+  /* No button logic */
+  #no-btn { position: relative; }
+</style>
+</head>
+<body>
+
+<!-- Background floating hearts -->
+<div class="bg-hearts" id="bgHearts"></div>
+
+<!-- Main card -->
+<div class="card" id="main-card">
+  <span class="envelope-icon">💌</span>
+  <div class="greeting">A little message for...</div>
+  <div class="name">Aka</div>
+  <div class="question">Would you be my Valentine? 🌹</div>
+
+  <div class="btn-group">
+    <button class="btn btn-yes" onclick="sayYes()">💖 Yes, absolutely!</button>
+    <button class="btn btn-no" id="no-btn" onmouseover="moveNo(this)" onclick="moveNo(this)">No</button>
+  </div>
+</div>
+
+<!-- YES celebration screen -->
+<div id="yes-screen">
+  <div class="canvas-wrap">
+    <canvas id="heartCanvas"></canvas>
+  </div>
+  <div class="yes-content">
+    <div class="yes-title">She said YES! 🎉💕</div>
+    <p class="yes-msg">
+      Aka, you've just made me the happiest person alive. 🥹<br><br>
+      Get ready for a Valentine's dinner full of love, laughter, and a little bit of magic — just like you. 🌹🍷
+    </p>
+    <div class="screenshot-box">
+      <span class="screenshot-icon">📸</span>
+      <p>
+        <span class="highlight">Aka!</span> Take a screenshot of this page and send it to your special someone to confirm your Valentine's date! 💌<br><br>
+        They're already counting down the minutes to seeing you. 🥂💫
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- Background hearts ---
+  const bgHearts = document.getElementById('bgHearts');
+  const emojis = ['❤️','💕','💖','💗','🌹','💝','✨'];
+  for (let i = 0; i < 18; i++) {
+    const h = document.createElement('div');
+    h.className = 'bg-heart';
+    h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    h.style.left = Math.random() * 100 + '%';
+    h.style.animationDuration = (6 + Math.random() * 10) + 's';
+    h.style.animationDelay = (Math.random() * 8) + 's';
+    h.style.fontSize = (1 + Math.random() * 2) + 'rem';
+    bgHearts.appendChild(h);
+  }
+
+  // --- No button wiggle away ---
+  function moveNo(btn) {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const x = Math.random() * (vw - 100);
+    const y = Math.random() * (vh - 60);
+    btn.style.position = 'fixed';
+    btn.style.left = x + 'px';
+    btn.style.top = y + 'px';
+    btn.style.zIndex = 999;
+    btn.style.transition = 'left 0.3s ease, top 0.3s ease';
+  }
+
+  // --- YES handler ---
+  function sayYes() {
+    document.getElementById('yes-screen').classList.add('show');
+    startHearts();
+  }
+
+  // --- Heart particle animation ---
+  function startHearts() {
+    const canvas = document.getElementById('heartCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const colors = ['#ff6b9d','#ff9a9e','#fecfef','#ff3d7f','#ffb3cf','#e91e8c','#ff69b4'];
+
+    function heartPath(ctx, x, y, size) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(size / 30, size / 30);
+      ctx.beginPath();
+      ctx.moveTo(0, -10);
+      ctx.bezierCurveTo(15, -25, 35, 0, 0, 25);
+      ctx.bezierCurveTo(-35, 0, -15, -25, 0, -10);
+      ctx.closePath();
+      ctx.restore();
+    }
+
+    class Particle {
+      constructor() { this.reset(true); }
+      reset(initial) {
+        this.x = Math.random() * canvas.width;
+        this.y = initial ? Math.random() * canvas.height : canvas.height + 30;
+        this.size = 8 + Math.random() * 22;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.speed = 0.8 + Math.random() * 2;
+        this.drift = (Math.random() - 0.5) * 1.2;
+        this.rot = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.06;
+        this.alpha = 0.7 + Math.random() * 0.3;
+        this.wobble = Math.random() * Math.PI * 2;
+      }
+      update() {
+        this.y -= this.speed;
+        this.x += this.drift + Math.sin(this.wobble) * 0.5;
+        this.wobble += 0.04;
+        this.rot += this.rotSpeed;
+        if (this.y < -40) this.reset(false);
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rot);
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 12;
+        heartPath(ctx, 0, 0, this.size);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+</script>
+</body>
+</html>
